@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
     ChevronDown,
     LogOut,
@@ -33,7 +33,7 @@ export function AdminHeader({
     onToggleSidebar,
 }: AdminHeaderProps) {
     const pathname = usePathname();
-
+    const router = useRouter();
     const { resolvedTheme, setTheme } = useTheme();
     const [mounted, setMounted] = React.useState(false);
 
@@ -124,7 +124,8 @@ export function AdminHeader({
                         />
 
                         <DropdownMenuContent align="end">
-                            <DropdownMenuItem variant="destructive" className="cursor-pointer flex items-center justify-between">
+                            <DropdownMenuItem variant="destructive" className="cursor-pointer flex items-center justify-between"
+                                onClick={() => router.push('/')}>
                                 Logout
                                 <LogOut />
                             </DropdownMenuItem>

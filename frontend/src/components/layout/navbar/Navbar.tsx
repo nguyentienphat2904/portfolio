@@ -115,7 +115,7 @@ export default function Navbar() {
 
                                 <DropdownMenuItem
                                     className="cursor-pointer flex items-center justify-between"
-                                    onClick={() => router.push('/admin')}
+                                    onClick={() => router.push('/login')}
                                 >
                                     <span>Admin</span>
                                     <LayoutDashboard className="h-4 w-4" />
