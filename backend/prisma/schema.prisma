@@ -1,10 +1,42 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      UserRole @default(ADMIN)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Profile {
+  id        String   @id @default(cuid())
+  name      String
+  title     String
+  bio       String
+  location  String?
+  email     String?
+  resumeUrl String?
+  avatarId  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  avatar    Media?   @relation(fields: [avatarId], references: [id])
+}
+
+model SocialLink {
+  id        String   @id @default(cuid())
+  platform  String
+  url       String
+  icon      String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
 }
 
 model ProjectCategory {
@@ -13,18 +45,8 @@ model ProjectCategory {
   slug      String    @unique
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  order     Int       @default(0)
   projects  Project[]
-}
-
-model Skill {
-  id        String        @id @default(cuid())
-  name      String        @unique
-  category  SkillCategory
-  icon      String?
-  order     Int           @default(0)
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
-  projects  Project[]     @relation("ProjectToSkill")
 }
 
 model Project {
@@ -41,6 +63,9 @@ model Project {
   categoryId  String?
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
+  content     String?
+  order       Int              @default(0)
+  status      ProjectStatus    @default(COMPLETED)
   category    ProjectCategory? @relation(fields: [categoryId], references: [id])
   thumbnail   Media?           @relation("ProjectThumbnail", fields: [thumbnailId], references: [id])
   images      ProjectImage[]
@@ -58,6 +83,18 @@ model ProjectImage {
   project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
 
+model Skill {
+  id        String        @id @default(cuid())
+  name      String        @unique
+  category  SkillCategory
+  icon      String?
+  order     Int           @default(0)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  level     Int?
+  projects  Project[]     @relation("ProjectToSkill")
+}
+
 model Experience {
   id          String         @id @default(cuid())
   company     String
@@ -71,44 +108,50 @@ model Experience {
   current     Boolean        @default(false)
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
+  location    String?
+  order       Int            @default(0)
   logo        Media?         @relation(fields: [logoId], references: [id])
 }
 
 model Education {
-  id        String   @id @default(cuid())
-  school    String
-  degree    String
-  major     String
-  logoId    String?
-  startYear Int
-  endYear   Int?
-  gpa       Float?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  logo      Media?   @relation(fields: [logoId], references: [id])
+  id          String   @id @default(cuid())
+  school      String
+  degree      String
+  major       String
+  logoId      String?
+  startYear   Int
+  endYear     Int?
+  gpa         Float?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  description String?
+  order       Int      @default(0)
+  logo        Media?   @relation(fields: [logoId], references: [id])
 }
 
 model Certification {
-  id            String    @id @default(cuid())
+  id            String            @id @default(cuid())
   name          String
   issuer        String
   issueDate     DateTime?
   credentialId  String?
   credentialUrl String?
   imageId       String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  image         Media?    @relation(fields: [imageId], references: [id])
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  order         Int               @default(0)
+  type          CertificationType
+  image         Media?            @relation(fields: [imageId], references: [id])
 }
 
 model ContactMessage {
-  id        String   @id @default(cuid())
+  id        String        @id @default(cuid())
   name      String
   email     String
   subject   String
   message   String
-  isRead    Boolean  @default(false)
-  createdAt DateTime @default(now())
+  createdAt DateTime      @default(now())
+  status    ContactStatus @default(NEW)
 }
 
 model Media {
@@ -128,16 +171,32 @@ model Media {
   certifications     Certification[]
   educations         Education[]
   experiences        Experience[]
+  profiles           Profile[]
   projectThumbnailOf Project[]       @relation("ProjectThumbnail")
   projectImages      ProjectImage[]
+  siteSettings       SiteSetting[]
 }
 
-enum MediaType {
-  IMAGE
-  VIDEO
-  PDF
-  DOCUMENT
-  OTHER
+model SiteSetting {
+  id          String   @id @default(cuid())
+  siteName    String
+  description String
+  keywords    String[]
+  faviconId   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  favicon     Media?   @relation(fields: [faviconId], references: [id])
+}
+
+enum UserRole {
+  ADMIN
+}
+
+enum ProjectStatus {
+  PLANNING
+  DEVELOPMENT
+  COMPLETED
+  ARCHIVED
 }
 
 enum SkillCategory {
@@ -156,4 +215,24 @@ enum EmploymentType {
   PART_TIME
   FULL_TIME
   FREELANCE
+}
+
+enum CertificationType {
+  COURSE
+  PROFESSIONAL
+  ACADEMIC
+}
+
+enum ContactStatus {
+  NEW
+  REPLIED
+  ARCHIVED
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+  PDF
+  DOCUMENT
+  OTHER
 }

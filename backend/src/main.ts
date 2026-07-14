@@ -20,13 +20,23 @@ async function bootstrap() {
     .setTitle('Portfolio API')
     .setDescription('Backend API for Nguyen Tien Phat Portfolio')
     .setVersion('1.0')
-    .addBearerAuth()
+    .addBearerAuth(
+      {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
+      },
+      "access-token",
+    )
     .build();
 
 
   const document = SwaggerModule.createDocument(
     app,
     config,
+    {
+      extraModels: [],
+    },
   );
 
 
