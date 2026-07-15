@@ -17,26 +17,31 @@ model User {
 }
 
 model Profile {
-  id        String   @id @default(cuid())
-  name      String
-  title     String
-  bio       String
-  location  String?
-  email     String?
-  resumeUrl String?
-  avatarId  String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  avatar    Media?   @relation(fields: [avatarId], references: [id])
+  id          String       @id @default(cuid())
+  name        String
+  title       String
+  bio         String       @db.Text
+  location    String?
+  email       String?
+  resumeId    String?
+  avatarId    String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  socialLinks SocialLink[]
+  resume      Media?       @relation("ResumeMedia", fields: [resumeId], references: [id])
+  avatar      Media?       @relation("AvatarMedia", fields: [avatarId], references: [id])
 }
 
 model SocialLink {
-  id        String   @id @default(cuid())
-  platform  String
+  id        String         @id @default(cuid())
+  profileId String
+  profile   Profile        @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  platform  SocialPlatform
   url       String
   icon      String?
-  order     Int      @default(0)
-  createdAt DateTime @default(now())
+  order     Int            @default(0)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
 }
 
 model ProjectCategory {
@@ -46,30 +51,29 @@ model ProjectCategory {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   order     Int       @default(0)
-  projects  Project[]
+  projects  Project[] @relation("ProjectToCategory")
 }
 
 model Project {
-  id          String           @id @default(cuid())
+  id          String            @id @default(cuid())
   title       String
-  slug        String           @unique
+  slug        String            @unique
   description String
   thumbnailId String?
   githubUrl   String?
   liveUrl     String?
-  featured    Boolean          @default(false)
+  featured    Boolean           @default(false)
   startDate   DateTime?
   endDate     DateTime?
-  categoryId  String?
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
   content     String?
-  order       Int              @default(0)
-  status      ProjectStatus    @default(COMPLETED)
-  category    ProjectCategory? @relation(fields: [categoryId], references: [id])
-  thumbnail   Media?           @relation("ProjectThumbnail", fields: [thumbnailId], references: [id])
+  order       Int               @default(0)
+  status      ProjectStatus     @default(COMPLETED)
+  categories  ProjectCategory[] @relation("ProjectToCategory")
+  thumbnail   Media?            @relation("ProjectThumbnail", fields: [thumbnailId], references: [id])
   images      ProjectImage[]
-  skills      Skill[]          @relation("ProjectToSkill")
+  skills      Skill[]           @relation("ProjectToSkill")
 }
 
 model ProjectImage {
@@ -81,6 +85,8 @@ model ProjectImage {
   createdAt DateTime @default(now())
   media     Media    @relation(fields: [mediaId], references: [id], onDelete: Cascade)
   project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, mediaId])
 }
 
 model Skill {
@@ -151,6 +157,7 @@ model ContactMessage {
   subject   String
   message   String
   createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
   status    ContactStatus @default(NEW)
 }
 
@@ -165,16 +172,17 @@ model Media {
   size               Int?
   width              Int?
   height             Int?
-  folder             String?
+  folder             MediaFolder
   createdAt          DateTime        @default(now())
   updatedAt          DateTime        @updatedAt
   certifications     Certification[]
   educations         Education[]
   experiences        Experience[]
-  profiles           Profile[]
   projectThumbnailOf Project[]       @relation("ProjectThumbnail")
   projectImages      ProjectImage[]
   siteSettings       SiteSetting[]
+  resumeMedia        Profile[]       @relation("ResumeMedia")
+  avatarMedia        Profile[]       @relation("AvatarMedia")
 }
 
 model SiteSetting {
@@ -234,5 +242,24 @@ enum MediaType {
   VIDEO
   PDF
   DOCUMENT
+  OTHER
+}
+
+enum SocialPlatform {
+  GITHUB
+  LINKEDIN
+  FACEBOOK
+  INSTAGRAM
+  X
+  YOUTUBE
+  EMAIL
+}
+
+enum MediaFolder {
+  PROJECT
+  CERTIFICATE
+  LOGO
+  PROFILE
+  RESUME
   OTHER
 }

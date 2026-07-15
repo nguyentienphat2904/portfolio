@@ -17,7 +17,7 @@ Stack:
 
 # Phase 1: Foundation
 
-## 1. Auth (`User`)
+## 1. Auth (`User`) - ✅
 
 Implement first because the admin panel requires authentication.
 
@@ -49,7 +49,7 @@ User
 
 ---
 
-## 2. Media (`Media`)
+## 2. Media (`Media`) - ✅
 
 Implement second because many entities depend on media.
 
@@ -101,7 +101,7 @@ return mediaId
 
 # Phase 2: Core Content
 
-## 3. Profile
+## 3. Profile - ✅
 
 Models:
 
