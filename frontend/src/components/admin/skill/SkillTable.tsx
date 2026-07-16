@@ -1,17 +1,34 @@
 "use client";
 
+import { useEffect, useState } from "react";
 
 import { DataTable } from "@/components/common/DataTable";
-import { skills } from "./data";
 import { columns } from "./columns";
+import { SkillTreeNode } from "@/types/skills/types";
+import { skillService } from "@/services/skill.service";
+import { buildSkillTree } from "@/lib/skill-tree";
 
 export function SkillsTable() {
+    const [skills, setSkills] = useState<SkillTreeNode[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        skillService
+            .getCoreSkills()
+            .then((res) => setSkills(buildSkillTree(res)))
+            .catch(console.error)
+            .finally(() => setLoading(false));
+    }, []);
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
     return (
         <DataTable
             columns={columns}
             data={skills}
-            searchKey="name"
-            searchPlaceholder="Search skills..."
+            getSubRows={(row) => row.children}
         />
     );
 }

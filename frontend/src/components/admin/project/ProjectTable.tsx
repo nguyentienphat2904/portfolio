@@ -1,26 +1,28 @@
 "use client";
+
+import { useEffect, useState } from "react";
+
 import { DataTable } from "@/components/common/DataTable";
-
 import { columns } from "./columns";
-import { ProjectItem } from "@/types/projects/types";
-
-const projects: ProjectItem[] = [
-    {
-        id: "1",
-        title: "Portfolio",
-        description: "Personal portfolio website.",
-        image: "/projects/portfolio.png",
-        tech: ["Next.js", "NestJS", "Tailwind"],
-        github: "#",
-        link: "#",
-        featured: true,
-        status: "published",
-        createdAt: "2026-07-01",
-        updatedAt: "2026-07-13",
-    },
-];
+import { Project } from "@/types/projects/types";
+import { projectService } from "@/services/project.service";
 
 export function ProjectsTable() {
+    const [projects, setProjects] = useState<Project[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        projectService
+            .getProjects()
+            .then(setProjects)
+            .catch(console.error)
+            .finally(() => setLoading(false));
+    }, []);
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
     return (
         <DataTable
             columns={columns}

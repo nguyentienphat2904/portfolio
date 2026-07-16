@@ -46,6 +46,9 @@ export class SkillService {
                     in: dto.category,
                 },
             }),
+            ...(dto.order !== undefined && {
+                order: dto.order,
+            }),
         };
         const orderBy = {
             [dto.sortBy]: dto.sortOrder,
@@ -60,7 +63,7 @@ export class SkillService {
                 orderBy,
             }),
         ]);
-        return { pagination: { total, page, size }, items };
+        return { pagination: { total, page, size, totalPages: Math.ceil(total / size), }, items };
     }
 
     async findById(id: string) {

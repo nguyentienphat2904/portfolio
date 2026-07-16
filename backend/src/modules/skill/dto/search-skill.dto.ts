@@ -1,7 +1,7 @@
 import { SkillCategory } from "@prisma/client";
-import { IsArray, IsEnum, IsIn, IsOptional } from "class-validator";
+import { IsArray, IsEnum, IsIn, IsInt, IsOptional } from "class-validator";
 import { SearchDto } from "@/common/dto/search.dto";
-import { Transform } from "class-transformer";
+import { Transform, Type } from "class-transformer";
 import { ApiProperty } from "@nestjs/swagger";
 
 export class SearchSkillDto extends SearchDto {
@@ -23,6 +23,7 @@ export class SearchSkillDto extends SearchDto {
     @ApiProperty({
         enum: SkillCategory,
         isArray: true,
+        required: false,
     })
     @IsOptional()
     @Transform(({ value }) =>
@@ -31,4 +32,14 @@ export class SearchSkillDto extends SearchDto {
     @IsArray()
     @IsEnum(SkillCategory, { each: true })
     category?: SkillCategory[];
+
+    @ApiProperty({
+        required: false,
+        type: Number,
+        example: 0,
+    })
+    @IsOptional()
+    @Type(() => Number)
+    @IsInt()
+    order?: number;
 }

@@ -1,3 +1,4 @@
+import { ProjectStatus } from "@/types/projects/types";
 import { AdminCard } from "../../common/AdminCard";
 import { StatusBadge } from "../../common/StatusBadge";
 
@@ -5,17 +6,17 @@ const projects = [
     {
         name: "Portfolio",
         updated: "2 hours ago",
-        status: "published",
+        status: ProjectStatus.COMPLETED,
     },
     {
         name: "FHIR Converter",
         updated: "Yesterday",
-        status: "published",
+        status: ProjectStatus.COMPLETED,
     },
     {
         name: "AI OCR",
         updated: "3 days ago",
-        status: "draft",
+        status: ProjectStatus.DEVELOPMENT,
     },
 ];
 

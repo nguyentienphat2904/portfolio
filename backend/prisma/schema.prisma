@@ -21,6 +21,7 @@ model Profile {
   name        String
   title       String
   bio         String       @db.Text
+  available   Boolean      @default(true)
   location    String?
   email       String?
   resumeId    String?
@@ -63,6 +64,7 @@ model Project {
   githubUrl   String?
   liveUrl     String?
   featured    Boolean           @default(false)
+  pinned      Boolean           @default(false)
   startDate   DateTime?
   endDate     DateTime?
   createdAt   DateTime          @default(now())

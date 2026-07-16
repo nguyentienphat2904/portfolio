@@ -17,7 +17,7 @@ export class CloudinaryService {
     async uploadFile(
         file: Express.Multer.File,
         folder: MediaFolder = MediaFolder.PROJECT,
-        resourceType: CloudinaryResourceType = CloudinaryResourceType.IMAGE
+        resourceType: CloudinaryResourceType = CloudinaryResourceType.AUTO
     ) {
         return new Promise((resolve, reject) => {
             cloudinary.uploader.upload_stream(
@@ -32,7 +32,6 @@ export class CloudinaryService {
             )
                 .end(file.buffer);
         });
-
     }
 
     async deleteFile(
@@ -53,14 +52,16 @@ export class CloudinaryService {
 
     getDownloadUrl(
         publicId: string,
-        resourceType: CloudinaryResourceType = CloudinaryResourceType.IMAGE,
-        fileName?: string,
+        resourceType: CloudinaryResourceType,
     ) {
         return cloudinary.url(publicId, {
             resource_type: resourceType,
+            type: "upload",
             secure: true,
             flags: "attachment",
-            attachment: fileName,
+            ...(resourceType === CloudinaryResourceType.RAW && {
+                format: "pdf",
+            }),
         });
     }
 

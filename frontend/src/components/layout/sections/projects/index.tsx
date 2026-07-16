@@ -2,12 +2,34 @@
 
 import { motion } from "framer-motion";
 
-import { projects } from "./project-data";
 import ProjectCard from "./project-card";
+import { useEffect, useMemo, useState } from "react";
+import { Project } from "@/types/projects/types";
+import { projectService } from "@/services/project.service";
 
 export default function Projects() {
-    const featuredProjects = projects.filter((p) => p.featured);
-    const regularProjects = projects.filter((p) => !p.featured);
+
+    const [projects, setProjects] = useState<Project[]>([]);
+
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        projectService
+            .getProjects()
+            .then(setProjects)
+            .catch(console.error)
+            .finally(() => setLoading(false));
+    }, []);
+
+    const featuredProjects = useMemo(
+        () => projects.filter((p) => p.featured),
+        [projects]
+    );
+
+    const regularProjects = useMemo(
+        () => projects.filter((p) => !p.featured),
+        [projects]
+    );
 
     return (
         <section

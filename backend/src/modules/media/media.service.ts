@@ -100,10 +100,9 @@ export class MediaService {
         const media = await this.findById(id);
 
         return {
-            url: this.cloudinary.getDownloadUrl(
-                media.publicId,
-                this.getResourceType(media),
-                media.fileName,
+            url: media.url.replace(
+                "/upload/",
+                "/upload/fl_attachment/"
             ),
         };
     }
@@ -113,7 +112,7 @@ export class MediaService {
     ): CloudinaryResourceType {
         switch (media.type) {
             case MediaType.IMAGE: return CloudinaryResourceType.IMAGE;
-            case MediaType.PDF: return CloudinaryResourceType.IMAGE;
+            case MediaType.PDF: return CloudinaryResourceType.RAW;
             case MediaType.DOCUMENT: return CloudinaryResourceType.RAW;
             default: return CloudinaryResourceType.RAW;
         }

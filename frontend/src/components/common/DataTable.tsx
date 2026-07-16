@@ -6,9 +6,11 @@ import {
     ColumnDef,
     flexRender,
     getCoreRowModel,
+    getExpandedRowModel,
     getFilteredRowModel,
     getPaginationRowModel,
     getSortedRowModel,
+    ExpandedState,
     SortingState,
     ColumnFiltersState,
     VisibilityState,
@@ -42,7 +44,7 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuChe
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
-
+    getSubRows?: (row: TData) => TData[] | undefined;
     searchKey?: string;
     searchPlaceholder?: string;
 }
@@ -50,33 +52,42 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>({
     columns,
     data,
+    getSubRows,
     searchKey,
     searchPlaceholder = "Search...",
 }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = React.useState<SortingState>([]);
-    const [columnFilters, setColumnFilters] =
-        React.useState<ColumnFiltersState>([]);
-    const [columnVisibility, setColumnVisibility] =
-        React.useState<VisibilityState>({});
+    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+    const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+    const [expanded, setExpanded] = React.useState<ExpandedState>({});
 
     const table = useReactTable({
         data,
         columns,
-
+        initialState: {
+            pagination: {
+                pageSize: 100,
+            },
+        },
         state: {
             sorting,
             columnFilters,
             columnVisibility,
+            expanded,
         },
 
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
         onColumnVisibilityChange: setColumnVisibility,
+        onExpandedChange: setExpanded,
 
         getCoreRowModel: getCoreRowModel(),
+        getExpandedRowModel: getExpandedRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         getSortedRowModel: getSortedRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
+
+        getSubRows,
     });
 
     return (

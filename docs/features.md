@@ -130,7 +130,7 @@ SEO metadata
 
 ---
 
-## 4. Project System
+## 4. Project System - ✅
 
 Most important portfolio feature.
 

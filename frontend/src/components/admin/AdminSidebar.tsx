@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+    BriefcaseBusiness,
     FolderKanban,
     Home,
     Settings,
@@ -21,6 +22,11 @@ const items = [
         title: "Projects",
         href: "/admin/projects",
         icon: FolderKanban,
+    },
+    {
+        title: "Experiences",
+        href: "/admin/experiences",
+        icon: BriefcaseBusiness,
     },
     {
         title: "Skills",

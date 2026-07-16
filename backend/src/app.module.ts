@@ -9,6 +9,9 @@ import { MediaModule } from './modules/media/media.module';
 import { ProfileModule } from './modules/profile/profile.module';
 import { SkillModule } from './modules/skill/skill.module';
 import { ProjectCategoryModule } from './modules/project-category/project-category.module';
+import { ProjectModule } from './modules/project/project.module';
+import { ProjectController } from './modules/project/project.controller';
+import { ProjectService } from './modules/project/project.service';
 
 @Module({
   imports: [
@@ -21,9 +24,10 @@ import { ProjectCategoryModule } from './modules/project-category/project-catego
     MediaModule,
     ProfileModule,
     SkillModule,
-    ProjectCategoryModule
+    ProjectCategoryModule,
+    ProjectModule
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, ProjectController],
+  providers: [AppService, ProjectService],
 })
 export class AppModule { }

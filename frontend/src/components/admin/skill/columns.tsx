@@ -2,13 +2,14 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import {
+    ChevronDown,
+    ChevronRight,
     MoreVertical,
     Pencil,
-    Star,
     Trash2,
 } from "lucide-react";
 
-
+import { DataTableColumnHeader } from "@/components/common/DataTableColumnHeader";
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
@@ -17,98 +18,126 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { SkillItem } from "@/types/skills/types";
-import { StatusBadge } from "@/components/common/StatusBadge";
-import { DataTableColumnHeader } from "@/components/common/DataTableColumnHeader";
+import { SkillTreeNode } from "@/types/skills/types";
 
-
-export const columns: ColumnDef<SkillItem>[] = [
+export const columns: ColumnDef<SkillTreeNode>[] = [
     {
         accessorKey: "name",
         header: ({ column }) => (
             <DataTableColumnHeader
                 column={column}
-                title="Skill"
-            />
-        ),
-    },
-    {
-        accessorKey: "category",
-        header: ({ column }) => (
-            <DataTableColumnHeader
-                column={column}
-                title="Category"
-            />
-        ),
-    },
-    {
-        accessorKey: "featured",
-        header: ({ column }) => (
-            <DataTableColumnHeader
-                column={column}
-                title="Featured"
-            />
-        ),
-        cell: ({ row }) =>
-            row.original.featured ? (
-                <Star className="size-4 fill-yellow-400 text-yellow-400" />
-            ) : (
-                "-"
-            ),
-    },
-    {
-        accessorKey: "status",
-        header: ({ column }) => (
-            <DataTableColumnHeader
-                column={column}
-                title="Status"
+                title="Skill Name"
             />
         ),
         cell: ({ row }) => (
-            <StatusBadge status={row.original.status} />
+            <div
+                className="flex items-center gap-2"
+                style={{
+                    paddingLeft: `${row.depth * 20}px`,
+                }}
+            >
+                {row.getCanExpand() ? (
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6 p-0"
+                        onClick={row.getToggleExpandedHandler()}
+                    >
+                        {row.getIsExpanded()
+                            ? <ChevronDown className="h-4 w-4" />
+                            : <ChevronRight className="h-4 w-4" />}
+                    </Button>
+                ) : (
+                    <div className="w-6" />
+                )}
+
+                <span>{row.original.name}</span>
+            </div>
         ),
     },
     {
-        accessorKey: "updatedAt",
+        accessorKey: "order",
         header: ({ column }) => (
             <DataTableColumnHeader
                 column={column}
-                title="Updated"
+                title="Is Core"
             />
         ),
+        cell: ({ row }) => {
+            if (row.getCanExpand()) {
+                return null;
+            }
+
+            return (
+                <span>
+                    {row.original.order === 0 ? "Yes" : "No"}
+                </span>
+            );
+        },
+    },
+    {
+        accessorKey: "icon",
+        header: ({ column }) => (
+            <DataTableColumnHeader
+                column={column}
+                title="Icon"
+            />
+        ),
+        cell: ({ row }) => {
+            if (row.getCanExpand()) {
+                return null;
+            }
+
+            return row.original.icon ? (
+                <img
+                    src={row.original.icon}
+                    alt={row.original.name}
+                    className="h-6 w-6 rounded object-contain"
+                />
+            ) : (
+                <span className="text-muted-foreground">-</span>
+            );
+        },
     },
     {
         id: "actions",
         enableSorting: false,
         enableHiding: false,
+        cell: ({ row }) => {
+            if (row.getCanExpand()) {
+                return null;
+            }
+            return (
+                <DropdownMenu>
+                    <DropdownMenuTrigger
+                        render={
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                            >
+                                <MoreVertical className="size-4" />
+                            </Button>
+                        }
+                    />
 
-        cell: () => (
-            <DropdownMenu>
-                <DropdownMenuTrigger
-                    render={
-                        <Button variant="ghost" size="icon">
-                            <MoreVertical className="size-4" />
-                        </Button>
-                    }
-                />
+                    <DropdownMenuContent align="end">
+                        <DropdownMenuItem className="cursor-pointer">
+                            <Pencil className="mr-2 size-4" />
+                            Edit
+                        </DropdownMenuItem>
 
-                <DropdownMenuContent align="end">
-                    <DropdownMenuItem className="cursor-pointer">
-                        <Pencil className="mr-2 size-4" />
-                        Edit
-                    </DropdownMenuItem>
+                        <DropdownMenuSeparator />
 
-                    <DropdownMenuSeparator />
-
-                    <DropdownMenuItem
-                        variant="destructive"
-                        className="cursor-pointer"
-                    >
-                        <Trash2 className="mr-2 size-4" />
-                        Delete
-                    </DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
-        ),
+                        <DropdownMenuItem
+                            variant="destructive"
+                            className="cursor-pointer"
+                        >
+                            <Trash2 className="mr-2 size-4" />
+                            Delete
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            );
+        },
     },
 ];

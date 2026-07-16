@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/badge";
+import { ProjectStatus } from "@/types/projects/types";
 
 type Status =
     | "published"
@@ -11,21 +12,44 @@ interface Props {
     status: Status;
 }
 
-const styles: Record<Status, string> = {
-    published: "bg-green-500/10 text-green-600",
-    draft: "bg-yellow-500/10 text-yellow-600",
-    archived: "bg-slate-500/10 text-slate-500",
-    active: "bg-blue-500/10 text-blue-600",
-    inactive: "bg-red-500/10 text-red-600",
+interface StatusBadgeProps {
+    status: ProjectStatus;
+}
+
+const statusConfig: Record<
+    ProjectStatus,
+    {
+        label: string;
+        className: string;
+    }
+> = {
+    [ProjectStatus.PLANNING]: {
+        label: "Planning",
+        className: "bg-gray-100 text-gray-700",
+    },
+    [ProjectStatus.DEVELOPMENT]: {
+        label: "Development",
+        className: "bg-blue-100 text-blue-700",
+    },
+    [ProjectStatus.COMPLETED]: {
+        label: "Completed",
+        className: "bg-green-100 text-green-700",
+    },
+    [ProjectStatus.ARCHIVED]: {
+        label: "Archived",
+        className: "bg-slate-100 text-slate-600",
+    },
 };
 
-export function StatusBadge({ status }: Props) {
+export function StatusBadge({ status }: StatusBadgeProps) {
+    console.log(status);
+    const config = statusConfig[status];
     return (
         <Badge
-            className={styles[status]}
+            className={config.className}
             variant="outline"
         >
-            {status}
+            {config.label}
         </Badge>
     );
 }
