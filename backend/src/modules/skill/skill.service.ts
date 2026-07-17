@@ -71,6 +71,7 @@ export class SkillService {
             where: { id },
             include: {
                 projects: true,
+                experiences: true,
             }
         });
         if (!skill) {

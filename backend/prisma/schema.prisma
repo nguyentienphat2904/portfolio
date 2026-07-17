@@ -92,19 +92,20 @@ model ProjectImage {
 }
 
 model Skill {
-  id        String        @id @default(cuid())
-  name      String        @unique
-  category  SkillCategory
-  icon      String?
-  order     Int           @default(0)
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
-  level     Int?
-  projects  Project[]     @relation("ProjectToSkill")
+  id          String            @id @default(cuid())
+  name        String            @unique
+  category    SkillCategory
+  icon        String?
+  order       Int               @default(0)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  level       Int?
+  projects    Project[]         @relation("ProjectToSkill")
+  experiences ExperienceSkill[]
 }
 
 model Experience {
-  id          String         @id @default(cuid())
+  id          String            @id @default(cuid())
   company     String
   position    String
   employment  EmploymentType
@@ -113,12 +114,23 @@ model Experience {
   website     String?
   startDate   DateTime
   endDate     DateTime?
-  current     Boolean        @default(false)
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  current     Boolean           @default(false)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
   location    String?
-  order       Int            @default(0)
-  logo        Media?         @relation(fields: [logoId], references: [id])
+  order       Int               @default(0)
+  logo        Media?            @relation(fields: [logoId], references: [id])
+  skills      ExperienceSkill[]
+}
+
+model ExperienceSkill {
+  experienceId String
+  skillId      String
+
+  experience Experience @relation(fields: [experienceId], references: [id], onDelete: Cascade)
+  skill      Skill      @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@id([experienceId, skillId])
 }
 
 model Education {

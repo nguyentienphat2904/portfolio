@@ -12,6 +12,7 @@ import { ProjectCategoryModule } from './modules/project-category/project-catego
 import { ProjectModule } from './modules/project/project.module';
 import { ProjectController } from './modules/project/project.controller';
 import { ProjectService } from './modules/project/project.service';
+import { ExperienceModule } from './modules/experience/experience.module';
 
 @Module({
   imports: [
@@ -25,7 +26,8 @@ import { ProjectService } from './modules/project/project.service';
     ProfileModule,
     SkillModule,
     ProjectCategoryModule,
-    ProjectModule
+    ProjectModule,
+    ExperienceModule
   ],
   controllers: [AppController, ProjectController],
   providers: [AppService, ProjectService],

@@ -25,7 +25,7 @@ class SkillService {
         size?: number;
         sortBy?: string;
         sortOrder?: "asc" | "desc";
-    }): Promise<Skill[]> {
+    }): Promise<SkillSearchResponse> {
         const response = await axios.get<SkillSearchResponse>(
             this.endpoint,
             {
@@ -33,7 +33,7 @@ class SkillService {
             },
         );
 
-        return response.data.items;
+        return response.data;
     }
 }
 

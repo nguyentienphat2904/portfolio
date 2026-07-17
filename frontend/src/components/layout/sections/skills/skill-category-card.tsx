@@ -3,26 +3,23 @@ import {
     Card,
     CardContent,
 } from "@/components/ui/card";
+import { Skill } from "@/types/skills/types";
 import { LucideIcon } from "lucide-react";
 
 interface Props {
     title: string;
     description: string;
-    icon: LucideIcon;
-    skills: string[];
+    skills: Skill[];
 }
 
 export default function SkillCategoryCard({
     title,
     description,
-    icon: Icon,
     skills,
 }: Props) {
     return (
         <Card className="rounded-3xl border-border/60 shadow-none transition-all hover:border-primary/20">
             <CardContent className="p-8">
-
-                <Icon className="mb-6 h-6 w-6 text-primary" />
 
                 <h3 className="text-xl font-semibold">
                     {title}
@@ -35,10 +32,10 @@ export default function SkillCategoryCard({
                 <div className="flex flex-wrap gap-2">
                     {skills.map((skill) => (
                         <Badge
-                            key={skill}
+                            key={skill.id}
                             variant="tech"
                         >
-                            {skill}
+                            {skill.name}
                         </Badge>
                     ))}
                 </div>

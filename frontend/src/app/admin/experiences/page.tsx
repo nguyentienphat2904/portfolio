@@ -1,3 +1,4 @@
+import { ExperienceTable } from "@/components/admin/experiences/ExperienceTable";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
@@ -15,7 +16,7 @@ export default function ExperiencesPage() {
                     </Button>
                 }
             />
-
+            <ExperienceTable />
         </div>
     );
 }

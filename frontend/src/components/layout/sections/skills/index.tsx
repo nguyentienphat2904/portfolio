@@ -5,9 +5,70 @@ import { motion } from "framer-motion";
 import SkillCategoryCard from "./skill-category-card";
 import CompetencyCard from "./competency-card";
 import { categories, competencies } from "./skill-data";
+import { useEffect, useState } from "react";
+import { Skill } from "@/types/skills/types";
+import { skillService } from "@/services/skill.service";
 
+const CATEGORY_CONFIG = [
+    {
+        title: "Frontend",
+        description:
+            "Building responsive and interactive user interfaces with modern frontend technologies.",
+        categories: ["FRONTEND"],
+    },
+    {
+        title: "Backend",
+        description:
+            "Developing scalable APIs, authentication and business logic.",
+        categories: ["BACKEND"],
+    },
+    {
+        title: "Database",
+        description:
+            "Designing relational and NoSQL databases for reliable applications.",
+        categories: ["DATABASE"],
+    },
+    {
+        title: "Tools & DevOps",
+        description:
+            "Development tools, cloud platforms and deployment.",
+        categories: ["TOOL", "DEVOPS", "CLOUD"],
+    },
+];
 
 export default function Skills() {
+    const [categories, setCategories] = useState<
+        {
+            title: string;
+            description: string;
+            skills: Skill[];
+        }[]
+    >([]);
+
+    useEffect(() => {
+        async function fetchSkills() {
+            const data = await skillService.getSkills({
+                page: 1,
+                size: 100,
+                sortBy: "order",
+                sortOrder: "asc",
+            });
+
+            const skills = data.items
+
+            const grouped = CATEGORY_CONFIG.map((config) => ({
+                title: config.title,
+                description: config.description,
+                skills: skills.filter((skill) =>
+                    config.categories.includes(skill.category)
+                ),
+            }));
+
+            setCategories(grouped);
+        }
+
+        fetchSkills();
+    }, []);
     return (
         <section
             id="skills"
@@ -41,10 +102,12 @@ export default function Skills() {
                 </motion.div>
 
                 <div className="grid gap-6 md:grid-cols-2">
-                    {categories.map((category: any) => (
+                    {categories.map((category) => (
                         <SkillCategoryCard
                             key={category.title}
-                            {...category}
+                            title={category.title}
+                            description={category.description}
+                            skills={category.skills}
                         />
                     ))}
                 </div>

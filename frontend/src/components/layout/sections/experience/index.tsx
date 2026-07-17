@@ -2,10 +2,25 @@
 
 import { motion } from "framer-motion";
 
+import { experienceService } from "@/services/experience.service";
+import { useState, useEffect } from "react";
+import type { Experience } from "@/types/experience/types";
 import ExperienceItem from "./experience-item";
-import { experiences } from "./experience-data";
 
 export default function Experience() {
+
+    const [experiences, setExperiences] = useState<Experience[]>([]);
+
+    useEffect(() => {
+        experienceService
+            .getExperiences({
+                page: 1,
+                size: 100,
+                sortBy: "startDate",
+                sortOrder: "desc",
+            })
+            .then((res) => setExperiences(res.items));
+    }, []);
     return (
         <section
             id="experience"
@@ -40,10 +55,10 @@ export default function Experience() {
 
                 <div className="space-y-10">
                     {experiences
-                        .map((experience: any) => (
+                        .map((experience: Experience) => (
                             <ExperienceItem
                                 key={experience.id}
-                                {...experience}
+                                experience={experience}
                             />
                         ))}
                 </div>

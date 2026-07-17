@@ -1,3 +1,5 @@
+import { SectionObserver } from "@/components/common/IntersectionObserver";
+import ScrollToTop from "@/components/common/ScrollToTop";
 import Footer from "@/components/layout/footer";
 import Navbar from "@/components/layout/navbar/Navbar";
 import About from "@/components/layout/sections/about";
@@ -12,7 +14,8 @@ export default function Home() {
   return (
     <>
       <Navbar />
-
+      <SectionObserver />
+      <ScrollToTop />
       <main>
         <About />
         <Skills />
