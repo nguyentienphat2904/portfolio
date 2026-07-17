@@ -71,7 +71,7 @@ Xây dựng một website portfolio cá nhân có:
 
 ### Home
 
-- [ ] Hero Section (Avatar, tên, chức danh, giới thiệu ngắn)
+- [x] Hero Section (Avatar, tên, chức danh, giới thiệu ngắn)
 - [ ] Download CV
 - [ ] Contact CTA
 
@@ -79,20 +79,20 @@ Xây dựng một website portfolio cá nhân có:
 
 ### About
 
-- [ ] Personal Information
-- [ ] Skills
-- [ ] Tech Stack
-- [ ] Languages
+- [x] Personal Information
+- [x] Skills
+- [x] Tech Stack
+- [x] Languages
 
 ---
 
 ### Experience
 
-- [ ] Experience List
-  - [ ] Company
-  - [ ] Position
-  - [ ] Duration
-  - [ ] Description
+- [x] Experience List
+  - [x] Company
+  - [x] Position
+  - [x] Duration
+  - [x] Description
 
 ---
 
@@ -108,20 +108,20 @@ Xây dựng một website portfolio cá nhân có:
 
 ### Projects
 
-- [ ] Project List
-- [ ] Search Projects
-- [ ] Filter Projects
-- [ ] Pagination
+- [x] Project List
+- [x] Search Projects
+- [x] Filter Projects
+- [x] Pagination
 
 #### Project Card
 
-- [ ] Thumbnail
-- [ ] Title
-- [ ] Short Description
-- [ ] Technology Tags
-- [ ] GitHub Link
-- [ ] Live Demo Link
-- [ ] Featured Badge
+- [x] Thumbnail
+- [x] Title
+- [x] Short Description
+- [x] Technology Tags
+- [x] GitHub Link
+- [x] Live Demo Link
+- [x] Featured Badge
 
 ---
 
@@ -152,10 +152,10 @@ Xây dựng một website portfolio cá nhân có:
 
 ### Authentication
 
-- [ ] Login
-- [ ] Logout
-- [ ] JWT Authentication
-- [ ] Authorization (Protected Routes)
+- [x] Login
+- [x] Logout
+- [x] JWT Authentication
+- [x] Authorization (Protected Routes)
 
 ---
 
@@ -238,7 +238,7 @@ Xây dựng một website portfolio cá nhân có:
 
 ## Authentication
 
-- [ ] Login
+- [x] Login
 - [ ] Logout
 
 ---

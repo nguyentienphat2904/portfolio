@@ -44,11 +44,6 @@ export class MediaController {
                     enum: Object.values(MediaFolder),
                     default: MediaFolder.PROJECT
                 },
-                resourceType: {
-                    type: "string",
-                    enum: Object.values(CloudinaryResourceType),
-                    default: CloudinaryResourceType.IMAGE
-                }
             }
         }
     })
@@ -58,9 +53,8 @@ export class MediaController {
     upload(
         @UploadedFile() file: Express.Multer.File,
         @Body('folder') folder: MediaFolder = MediaFolder.PROJECT,
-        @Body('resourceType') resourceType: CloudinaryResourceType = CloudinaryResourceType.IMAGE
     ) {
-        return this.mediaService.upload(file, folder, resourceType);
+        return this.mediaService.upload(file, folder);
     }
 
     @Delete("/:id")

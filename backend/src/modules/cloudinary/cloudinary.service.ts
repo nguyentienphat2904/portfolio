@@ -1,7 +1,7 @@
-import { CloudinaryResourceType } from '@/common/enums';
 import { Injectable } from '@nestjs/common';
-import { MediaFolder } from '@prisma/client';
 import { v2 as cloudinary } from 'cloudinary';
+import type { UploadApiResponse } from 'cloudinary';
+import { MediaFolder } from '@prisma/client';
 
 @Injectable()
 export class CloudinaryService {
@@ -14,69 +14,89 @@ export class CloudinaryService {
         });
     }
 
+
     async uploadFile(
         file: Express.Multer.File,
-        folder: MediaFolder = MediaFolder.PROJECT,
-        resourceType: CloudinaryResourceType = CloudinaryResourceType.AUTO
-    ) {
+        folder: MediaFolder,
+    ): Promise<UploadApiResponse> {
+
         return new Promise((resolve, reject) => {
+
+            const fileName = file.originalname
+                .replace(/\.[^/.]+$/, '')
+                .replace(/[^a-zA-Z0-9-_]/g, '_');
+
             cloudinary.uploader.upload_stream(
                 {
                     folder: this.getFolder(folder),
-                    resource_type: resourceType,
+                    resource_type: "image",
+                    public_id: fileName,
+                    use_filename: true,
+                    unique_filename: false,
+                    filename_override: file.originalname,
                 },
                 (error, result) => {
-                    if (error) reject(error);
-                    else resolve(result);
-                }
-            )
-                .end(file.buffer);
+
+                    if (error) {
+                        reject(error);
+                        return;
+                    }
+
+                    if (!result) {
+                        reject(new Error("Upload failed"));
+                        return;
+                    }
+
+                    resolve(result);
+                },
+
+            ).end(file.buffer);
+
         });
     }
 
-    async deleteFile(
-        publicId: string
-    ) {
-        return cloudinary.uploader.destroy(publicId);
+
+    async deleteFile(publicId: string) {
+        return cloudinary.uploader.destroy(publicId, {
+            resource_type: "image",
+        });
     }
 
-    getPreviewUrl(
-        publicId: string,
-        resourceType: CloudinaryResourceType = CloudinaryResourceType.IMAGE,
-    ) {
+
+    getPreviewUrl(publicId: string) {
         return cloudinary.url(publicId, {
-            resource_type: resourceType,
+            resource_type: "image",
+            type: "upload",
             secure: true,
         });
     }
 
-    getDownloadUrl(
-        publicId: string,
-        resourceType: CloudinaryResourceType,
-    ) {
+
+    getDownloadUrl(publicId: string) {
         return cloudinary.url(publicId, {
-            resource_type: resourceType,
+            resource_type: "image",
             type: "upload",
             secure: true,
             flags: "attachment",
-            ...(resourceType === CloudinaryResourceType.RAW && {
-                format: "pdf",
-            }),
         });
     }
 
-    private getFolder(folder: MediaFolder): string {
+
+    private getFolder(folder: MediaFolder) {
+
         switch (folder) {
             case MediaFolder.PROJECT:
                 return "projects";
+
             case MediaFolder.CERTIFICATE:
                 return "certificates";
-            case MediaFolder.LOGO:
-                return "logos";
-            case MediaFolder.PROFILE:
-                return "profile";
+
             case MediaFolder.RESUME:
                 return "resume";
+
+            case MediaFolder.PROFILE:
+                return "profile";
+
             default:
                 return "others";
         }

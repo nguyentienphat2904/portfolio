@@ -10,13 +10,22 @@ import { useState, useEffect } from "react";
 import { Skill } from "@/types/skills/types";
 import { skillService } from "@/services/skill.service";
 import ParticleBackground from "@/components/common/ParticleBackground";
+import { mediaService } from "@/services/media.service";
 
 export default function About() {
     const [profile, setProfile] = useState<Profile | null>(null);
     const [skills, setSkills] = useState<Skill[]>([]);
+    const [resumeUrl, setResumeUrl] = useState<string>("");
 
     useEffect(() => {
-        profileService.getProfile().then(setProfile);
+        profileService.getProfile().then(async (data) => {
+            setProfile(data);
+
+            if (data.resumeId) {
+                const result = await mediaService.getDownloadUrl(data.resumeId);
+                setResumeUrl(result.url);
+            }
+        });
         skillService.getCoreSkills().then(setSkills);
     }, []);
 
@@ -110,8 +119,7 @@ export default function About() {
                             </Link>
 
                             <a
-                                href="/cv.pdf"
-                                download="Nguyen_Tien_Phat_CV.pdf"
+                                href={resumeUrl}
                                 className="flex items-center gap-2 px-6 py-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-transparent text-slate-900 dark:text-white font-semibold hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-all select-none text-sm"
                             >
                                 Download Resume
@@ -210,6 +218,6 @@ export default function About() {
 
                 </div>
             </div>
-        </section>
+        </section >
     );
 }
