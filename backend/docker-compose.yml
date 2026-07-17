@@ -1,0 +1,14 @@
+services:
+
+  api:
+    image: ghcr.io/username/repo/portfolio-api:latest
+
+    container_name: portfolio-api
+
+    restart: always
+
+    ports:
+      - "3000:3000"
+
+    env_file:
+      - .env

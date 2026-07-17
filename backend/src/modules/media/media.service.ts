@@ -1,10 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { PrismaService } from '@/prisma/prisma.service';
-import { Media, MediaFolder, MediaType, Prisma } from '@prisma/client';
-import { CloudinaryResourceType } from '@/common/enums';
+import { MediaFolder, MediaType, Prisma } from '@prisma/client';
 import { SearchMediaDto } from './dto/search-media.dto';
-import type { UploadApiResponse } from 'cloudinary';
 
 @Injectable()
 export class MediaService {

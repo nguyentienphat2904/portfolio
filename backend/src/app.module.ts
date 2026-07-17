@@ -13,6 +13,7 @@ import { ProjectModule } from './modules/project/project.module';
 import { ProjectController } from './modules/project/project.controller';
 import { ProjectService } from './modules/project/project.service';
 import { ExperienceModule } from './modules/experience/experience.module';
+import { CertificateModule } from './modules/certificate/certificate.module';
 
 @Module({
   imports: [
@@ -27,7 +28,8 @@ import { ExperienceModule } from './modules/experience/experience.module';
     SkillModule,
     ProjectCategoryModule,
     ProjectModule,
-    ExperienceModule
+    ExperienceModule,
+    CertificateModule
   ],
   controllers: [AppController, ProjectController],
   providers: [AppService, ProjectService],

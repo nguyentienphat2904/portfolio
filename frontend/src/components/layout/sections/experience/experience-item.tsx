@@ -24,7 +24,7 @@ export default function ExperienceItem({
             <Card className="rounded-3xl shadow-none">
                 <CardContent className="p-8">
 
-                    <div className="mb-4 flex items-center justify-between gap-4">
+                    <div className="mb-4 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-start">
 
                         <div>
                             <p className="text-sm uppercase tracking-[0.15em] text-primary">
@@ -41,19 +41,17 @@ export default function ExperienceItem({
                         </div>
 
                         <Badge variant="outline">
-                            <Badge variant="outline">
-                                {new Date(experience.startDate).toLocaleDateString("en-US", {
+                            {new Date(experience.startDate).toLocaleDateString("en-US", {
+                                month: "short",
+                                year: "numeric",
+                            })}
+                            {" — "}
+                            {experience.current
+                                ? "Present"
+                                : new Date(experience.endDate!).toLocaleDateString("en-US", {
                                     month: "short",
                                     year: "numeric",
                                 })}
-                                {" — "}
-                                {experience.current
-                                    ? "Present"
-                                    : new Date(experience.endDate!).toLocaleDateString("en-US", {
-                                        month: "short",
-                                        year: "numeric",
-                                    })}
-                            </Badge>
                         </Badge>
 
                     </div>

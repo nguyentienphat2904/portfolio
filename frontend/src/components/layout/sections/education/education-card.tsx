@@ -40,16 +40,14 @@ export default function EducationCard({
             <CardContent className="p-8">
 
                 {/* Header */}
-                <div className="mb-8 flex items-start justify-between gap-5">
+                <div className="mb-8 flex flex-col items-start justify-between gap-5 sm:flex-row sm:items-start">
 
                     <div className="flex gap-5">
-
-                        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10">
+                        <div className="hidden h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 sm:flex">
                             <Icon className="h-7 w-7 text-primary" />
                         </div>
 
                         <div>
-
                             <div className="mb-3 flex flex-wrap items-center gap-2">
                                 <Badge variant="tech">
                                     HCMUT
@@ -188,8 +186,6 @@ export default function EducationCard({
                                 key={item}
                                 className="flex items-start gap-3"
                             >
-                                <div className="mt-2 h-2 w-2 rounded-full bg-primary" />
-
                                 <span className="text-muted-foreground">
                                     {item}
                                 </span>

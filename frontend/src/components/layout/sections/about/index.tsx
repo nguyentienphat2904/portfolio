@@ -177,6 +177,7 @@ export default function About() {
                                         src="/avatar.jpg"
                                         alt="Nguyen Tien Phat"
                                         fill
+                                        sizes="(max-width: 768px) 100vw, 400px"
                                         className="object-cover object-center"
                                         priority
                                     />

@@ -11,7 +11,7 @@ const beVietnamPro = Be_Vietnam_Pro({
 });
 
 export const metadata: Metadata = {
-  title: "Portfolio",
+  title: "Nguyen Tien Phat Portfolio",
   description: "Portfolio of Nguyen Tien Phat",
 };
 

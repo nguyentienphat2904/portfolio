@@ -3,9 +3,26 @@
 import { motion } from "framer-motion";
 
 import CertificationCard from "./certification-card";
-import { certifications } from "./certification-data";
+import { certificationService } from "@/services/certificate.service";
+import { Certification } from "@/types/certifications/types";
+import { useState, useEffect } from "react";
 
 export default function Certifications() {
+    const [certifications, setCertifications] = useState<Certification[]>([]);
+
+    useEffect(() => {
+        const fetchCertifications = async () => {
+            try {
+                const data = await certificationService.getCertifications();
+                setCertifications(data);
+            } catch (error) {
+                console.error("Failed to fetch certifications:", error);
+            }
+        };
+
+        fetchCertifications();
+    }, []);
+
     return (
         <section
             id="certifications"
@@ -39,10 +56,10 @@ export default function Certifications() {
 
                 <div className="grid gap-8 md:grid-cols-2">
 
-                    {certifications.map((cert: any) => (
+                    {certifications.map((cert: Certification) => (
                         <CertificationCard
                             key={cert.id}
-                            {...cert}
+                            certification={cert}
                         />
                     ))}
 
