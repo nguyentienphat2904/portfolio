@@ -33,7 +33,7 @@ export default function AdminLoginPage() {
     }
 
     return (
-        <main className=" min-h-screen flex items-center justify-center dark:bg-[#020617] p-6 ">
+        <main className=" min-h-screen flex items-center justify-center p-6 ">
             <div className=" w-full max-w-5xl min-h-155 overflow-hidden rounded-3xl border border-slate-200 dark:border-white/10 grid lg:grid-cols-2 ">
                 {/* LEFT BRAND */}
                 <section className=" relative hidden lg:flex flex-col justify-between overflow-hidden bg-[#06182d] p-10 text-white">

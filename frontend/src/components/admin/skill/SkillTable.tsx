@@ -14,7 +14,7 @@ export function SkillsTable() {
 
     useEffect(() => {
         skillService
-            .getSkills()
+            .getSkills({ size: 100 })
             .then((res) => setSkills(buildSkillTree(res.items)))
             .catch(console.error)
             .finally(() => setLoading(false));

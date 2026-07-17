@@ -9,6 +9,7 @@ import { Profile } from "@/types/profile/types";
 import { useState, useEffect } from "react";
 import { Skill } from "@/types/skills/types";
 import { skillService } from "@/services/skill.service";
+import ParticleBackground from "@/components/common/ParticleBackground";
 
 export default function About() {
     const [profile, setProfile] = useState<Profile | null>(null);
@@ -27,6 +28,7 @@ export default function About() {
             {/* Background elements */}
             <div className="absolute top-1/4 left-1/10 w-96 h-96 bg-primary/5 dark:bg-primary/10 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute bottom-1/4 right-1/10 w-96 h-96 bg-accent/5 dark:bg-accent/10 rounded-full blur-3xl pointer-events-none" />
+            <ParticleBackground />
 
             <div className="container mx-auto px-6 max-w-7xl relative z-10">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">

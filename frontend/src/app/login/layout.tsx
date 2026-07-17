@@ -1,3 +1,4 @@
+import ParticleBackground from "@/components/common/ParticleBackground";
 import { ReactNode } from "react";
 
 export default function LoginLayout({
@@ -42,7 +43,6 @@ export default function LoginLayout({
                 "
             />
 
-
             {/* Main content */}
             <main
                 className="
@@ -55,6 +55,7 @@ export default function LoginLayout({
                     px-6
                 "
             >
+                <ParticleBackground />
                 {children}
             </main>
         </div>

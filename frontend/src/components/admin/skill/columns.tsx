@@ -19,6 +19,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SkillTreeNode } from "@/types/skills/types";
+import { Badge } from "@/components/ui/badge";
 
 export const columns: ColumnDef<SkillTreeNode>[] = [
     {
@@ -60,7 +61,7 @@ export const columns: ColumnDef<SkillTreeNode>[] = [
         header: ({ column }) => (
             <DataTableColumnHeader
                 column={column}
-                title="Is Core"
+                title="Priority"
             />
         ),
         cell: ({ row }) => {
@@ -68,10 +69,14 @@ export const columns: ColumnDef<SkillTreeNode>[] = [
                 return null;
             }
 
+            const isCore = row.original.order === 0;
+
             return (
-                <span>
-                    {row.original.order === 0 ? "Yes" : "No"}
-                </span>
+                <Badge
+                    variant={isCore ? "default" : "secondary"}
+                >
+                    {isCore ? "Primary" : "Secondary"}
+                </Badge>
             );
         },
     },
