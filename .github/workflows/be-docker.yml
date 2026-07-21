@@ -26,12 +26,12 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and push
+      - name: Build and Push Docker Image
         uses: docker/build-push-action@v6
         with:
           context: ./backend
           file: ./backend/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ secrets.DOCKER_USERNAME }}/portfolio-api:latest
-            ghcr.io/${{ secrets.DOCKER_USERNAME }}/portfolio-api:${{ github.sha }}
+            ${{ secrets.DOCKER_USERNAME }}/portfolio-api:latest
+            ${{ secrets.DOCKER_USERNAME }}/portfolio-api:${{ github.sha }}
