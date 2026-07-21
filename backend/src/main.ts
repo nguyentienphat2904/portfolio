@@ -49,6 +49,7 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'http://localhost:3001',
+      'http://localhost:3000',
       'https://portfolio-eight-olive-14.vercel.app',
     ],
     credentials: true,
