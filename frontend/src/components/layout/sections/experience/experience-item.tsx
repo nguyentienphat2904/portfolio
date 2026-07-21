@@ -1,30 +1,15 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { LucideIcon } from "lucide-react";
+import { Experience } from "@/types/experience/types";
+import { Laptop } from "lucide-react";
 
-interface ExperienceItemProps {
-    icon: LucideIcon;
-    type: string;
-    title: string;
-    company: string;
-    location: string;
-    period: string;
-    description: string;
-    highlights: string[];
-    technologies: string[];
+interface Props {
+    experience: Experience;
 }
 
 export default function ExperienceItem({
-    icon: Icon,
-    type,
-    title,
-    company,
-    location,
-    period,
-    description,
-    highlights,
-    technologies,
-}: ExperienceItemProps) {
+    experience,
+}: Props) {
     return (
         <div className="relative pl-12">
 
@@ -33,57 +18,55 @@ export default function ExperienceItem({
 
             {/* dot */}
             <div className="absolute left-0 top-10 flex h-10 w-10 items-center justify-center rounded-full border bg-background">
-                <Icon className="h-5 w-5 text-primary" />
+                <Laptop className="h-5 w-5 text-primary" />
             </div>
 
             <Card className="rounded-3xl shadow-none">
                 <CardContent className="p-8">
 
-                    <div className="mb-4 flex items-center justify-between gap-4">
+                    <div className="mb-4 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-start">
 
                         <div>
                             <p className="text-sm uppercase tracking-[0.15em] text-primary">
-                                {type}
+                                {experience.employment.replace("_", " ")}
                             </p>
 
                             <h3 className="mt-2 text-2xl font-semibold">
-                                {title}
+                                {experience.position}
                             </h3>
 
                             <p className="mt-1 text-muted-foreground">
-                                {company} • {location}
+                                {experience.company} - {experience.location}
                             </p>
                         </div>
 
                         <Badge variant="outline">
-                            {period}
+                            {new Date(experience.startDate).toLocaleDateString("en-US", {
+                                month: "short",
+                                year: "numeric",
+                            })}
+                            {" — "}
+                            {experience.current
+                                ? "Present"
+                                : new Date(experience.endDate!).toLocaleDateString("en-US", {
+                                    month: "short",
+                                    year: "numeric",
+                                })}
                         </Badge>
 
                     </div>
 
                     <p className="leading-relaxed text-muted-foreground">
-                        {description}
+                        {experience.description}
                     </p>
 
-                    <ul className="mt-6 space-y-2">
-                        {highlights.map((item) => (
-                            <li
-                                key={item}
-                                className="flex gap-3 text-sm text-muted-foreground"
-                            >
-                                <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary" />
-                                {item}
-                            </li>
-                        ))}
-                    </ul>
-
                     <div className="mt-8 flex flex-wrap gap-2">
-                        {technologies.map((tech) => (
+                        {experience.skills.map(({ skill }) => (
                             <Badge
-                                key={tech}
+                                key={skill.id}
                                 variant="tech"
                             >
-                                {tech}
+                                {skill.name}
                             </Badge>
                         ))}
                     </div>

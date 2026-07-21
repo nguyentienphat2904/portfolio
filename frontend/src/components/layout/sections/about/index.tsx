@@ -4,19 +4,30 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Award, ArrowRight, Download } from "lucide-react";
+import { profileService } from "@/services/profile.service";
+import { Profile } from "@/types/profile/types";
+import { useState, useEffect } from "react";
+import { Skill } from "@/types/skills/types";
+import { skillService } from "@/services/skill.service";
+import ParticleBackground from "@/components/common/ParticleBackground";
+import { mediaService } from "@/services/media.service";
 
 export default function About() {
-    const techStack = [
-        "Spring Boot",
-        "NestJS",
-        "React",
-        "Next.js",
-        "Tailwind CSS",
-        "PostgreSQL",
-        "MongoDB",
-        "Docker",
-        "Git",
-    ];
+    const [profile, setProfile] = useState<Profile | null>(null);
+    const [skills, setSkills] = useState<Skill[]>([]);
+    const [resumeUrl, setResumeUrl] = useState<string>("");
+
+    useEffect(() => {
+        profileService.getProfile().then(async (data) => {
+            setProfile(data);
+
+            if (data.resumeId) {
+                const result = await mediaService.getDownloadUrl(data.resumeId);
+                setResumeUrl(result.url);
+            }
+        });
+        skillService.getCoreSkills().then(setSkills);
+    }, []);
 
     return (
         <section
@@ -26,6 +37,7 @@ export default function About() {
             {/* Background elements */}
             <div className="absolute top-1/4 left-1/10 w-96 h-96 bg-primary/5 dark:bg-primary/10 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute bottom-1/4 right-1/10 w-96 h-96 bg-accent/5 dark:bg-accent/10 rounded-full blur-3xl pointer-events-none" />
+            <ParticleBackground />
 
             <div className="container mx-auto px-6 max-w-7xl relative z-10">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
@@ -33,18 +45,39 @@ export default function About() {
                     {/* Left Column: Text & Content */}
                     <div className="lg:col-span-7 flex flex-col items-start text-left">
                         {/* Status Badge */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 15 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5 }}
-                            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-emerald-200/50 dark:border-emerald-800/30 bg-emerald-50/50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold select-none mb-6"
-                        >
-                            <span className="relative flex h-2 w-2">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                            </span>
-                            AVAILABLE FOR HIRE
-                        </motion.div>
+                        {profile && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 15 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.5 }}
+                                className={`
+                                    inline-flex items-center gap-2 px-3 py-1.5 rounded-full
+                                    border text-xs font-semibold select-none mb-6
+                                    ${profile.available
+                                        ? "border-emerald-200/50 bg-emerald-50/50 text-emerald-600 dark:border-emerald-800/30 dark:bg-emerald-950/20 dark:text-emerald-400"
+                                        : "border-slate-200 bg-slate-50 text-slate-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400"
+                                    }
+                                `}
+                            >
+                                <span
+                                    className={`
+                                    relative flex h-2 w-2 rounded-full
+                                    ${profile.available
+                                            ? "bg-emerald-500"
+                                            : "bg-slate-400"
+                                        }
+                                    `}
+                                >
+                                    {profile.available && (
+                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                                    )}
+                                </span>
+
+                                {profile.available
+                                    ? "AVAILABLE FOR HIRE"
+                                    : "CURRENTLY UNAVAILABLE"}
+                            </motion.div>
+                        )}
 
                         {/* Title */}
                         <motion.h1
@@ -67,10 +100,7 @@ export default function About() {
                             transition={{ duration: 0.5, delay: 0.2 }}
                             className="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed mb-8 max-w-xl"
                         >
-                            I am Nguyen Tien Phat, a Fresher Software Engineer based in Ho Chi Minh City, Vietnam.
-                            With a Bachelor's in Computer Science from HCMUT, I specialize in building
-                            robust backend APIs using Spring Boot and NestJS, alongside crafting responsive frontends with
-                            React and Next.js. I focus on creating high-performance, secure, and user-centric web applications.
+                            {profile?.bio}
                         </motion.p>
 
                         {/* Action Buttons */}
@@ -89,8 +119,7 @@ export default function About() {
                             </Link>
 
                             <a
-                                href="/cv.pdf"
-                                download="Nguyen_Tien_Phat_CV.pdf"
+                                href={resumeUrl}
                                 className="flex items-center gap-2 px-6 py-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-transparent text-slate-900 dark:text-white font-semibold hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-all select-none text-sm"
                             >
                                 Download Resume
@@ -109,12 +138,12 @@ export default function About() {
                                 CORE TECHNOLOGY STACK
                             </h2>
                             <div className="flex flex-wrap gap-2.5">
-                                {techStack.map((tech, index) => (
+                                {skills?.map((skill) => (
                                     <span
-                                        key={tech}
+                                        key={skill.id}
                                         className="px-3.5 py-1.5 rounded-lg border border-slate-200/60 dark:border-slate-800/60 bg-slate-50/50 dark:bg-slate-900/30 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:border-primary/30 dark:hover:border-primary/30 transition-colors duration-200"
                                     >
-                                        {tech}
+                                        {skill.name}
                                     </span>
                                 ))}
                             </div>
@@ -148,6 +177,7 @@ export default function About() {
                                         src="/avatar.jpg"
                                         alt="Nguyen Tien Phat"
                                         fill
+                                        sizes="(max-width: 768px) 100vw, 400px"
                                         className="object-cover object-center"
                                         priority
                                     />
@@ -189,6 +219,6 @@ export default function About() {
 
                 </div>
             </div>
-        </section>
+        </section >
     );
 }

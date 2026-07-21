@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { LayoutDashboard, Menu } from "lucide-react";
+import { ChevronDown, LayoutDashboard, Menu, Moon, Sun } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -10,9 +10,11 @@ import {
     SheetTrigger,
 } from "@/components/ui/sheet";
 
-import { ThemeToggle } from "@/components/theme-toggle";
+import { ThemeToggle, useThemeToggle } from "@/components/theme-toggle";
 import NavLink from "./NavLink";
 import { useActiveSection } from "@/hooks/useActiveSection";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuGroup } from "@/components/ui/dropdown-menu";
+import { useRouter } from "next/navigation";
 
 const NAV_ITEMS = [
     { label: "About", href: "#about" },
@@ -25,6 +27,8 @@ const NAV_ITEMS = [
 export default function Navbar() {
     const sectionIds = NAV_ITEMS.map((item) => item.href.replace('#', ''));
     const activeSection = useActiveSection(sectionIds);
+    const router = useRouter();
+    const { isDark, toggleTheme } = useThemeToggle();
 
     return (
         <header className="sticky top-4 z-50 px-4">
@@ -76,8 +80,49 @@ export default function Navbar() {
 
                 {/* Right */}
                 <div className="flex items-center gap-2">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger
+                            render={
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="text-slate-800 dark:text-white hover:bg-slate-100 dark:hover:bg-white/10"
+                                >
+                                    <ChevronDown className="h-5 w-5" />
+                                </Button>
+                            }
+                        />
+                        <DropdownMenuContent align="end" className="w-fit">
+                            <DropdownMenuGroup>
 
-                    <ThemeToggle />
+                                <DropdownMenuItem
+                                    onClick={toggleTheme}
+                                    className="cursor-pointer flex items-center justify-between"
+                                >
+                                    <span>{isDark ? "Light mode" : "Dark mode"}</span>
+
+                                    <div className="relative flex h-4 w-4 items-center justify-center">
+                                        <Sun
+                                            className={`absolute h-4 w-4 transition-all duration-300 ${isDark ? "-rotate-90 scale-0" : "rotate-0 scale-100"}`}
+                                        />
+                                        <Moon
+                                            className={`absolute h-4 w-4 transition-all duration-300 ${isDark ? "rotate-0 scale-100" : "rotate-90 scale-0"}`}
+                                        />
+                                    </div>
+                                </DropdownMenuItem>
+
+                                <DropdownMenuSeparator />
+
+                                <DropdownMenuItem
+                                    className="cursor-pointer flex items-center justify-between"
+                                    onClick={() => router.push('/login')}
+                                >
+                                    <span>Admin</span>
+                                    <LayoutDashboard className="h-4 w-4" />
+                                </DropdownMenuItem>
+                            </DropdownMenuGroup>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
 
                     {/* Mobile */}
                     <Sheet>
@@ -108,21 +153,11 @@ export default function Navbar() {
                                         </NavLink>
                                     );
                                 })}
-
-                                {/* <Button
-                                    render={
-                                        <Link href="/admin">
-                                            <LayoutDashboard className="mr-2 h-4 w-4" />
-                                            Admin Dashboard
-                                        </Link>
-                                    }
-                                    className="mt-4"
-                                /> */}
                             </nav>
                         </SheetContent>
                     </Sheet>
                 </div>
             </div>
-        </header>
+        </header >
     );
 }

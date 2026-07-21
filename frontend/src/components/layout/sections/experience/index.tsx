@@ -2,16 +2,31 @@
 
 import { motion } from "framer-motion";
 
+import { experienceService } from "@/services/experience.service";
+import { useState, useEffect } from "react";
+import type { Experience } from "@/types/experience/types";
 import ExperienceItem from "./experience-item";
-import { experiences } from "./experience-data";
 
 export default function Experience() {
+
+    const [experiences, setExperiences] = useState<Experience[]>([]);
+
+    useEffect(() => {
+        experienceService
+            .getExperiences({
+                page: 1,
+                size: 100,
+                sortBy: "startDate",
+                sortOrder: "desc",
+            })
+            .then((res) => setExperiences(res.items));
+    }, []);
     return (
         <section
             id="experience"
-            className="py-28"
+            className="relative min-h-[calc(100vh-5rem)] flex items-center justify-center py-20 overflow-hidden "
         >
-            <div className="container mx-auto max-w-6xl px-6">
+            <div className="container mx-auto max-w-7xl px-6">
 
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -40,14 +55,13 @@ export default function Experience() {
 
                 <div className="space-y-10">
                     {experiences
-                        .map((experience: any) => (
+                        .map((experience: Experience) => (
                             <ExperienceItem
                                 key={experience.id}
-                                {...experience}
+                                experience={experience}
                             />
                         ))}
                 </div>
-
             </div>
         </section>
     );

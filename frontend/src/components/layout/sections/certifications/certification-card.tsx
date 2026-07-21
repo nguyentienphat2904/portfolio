@@ -1,7 +1,5 @@
 "use client";
-
-import Link from "next/link";
-import { Award, ExternalLink, LucideIcon } from "lucide-react";
+import { Award } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -16,29 +14,14 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
+import { Certification } from "@/types/certifications/types";
 
 interface CertificationCardProps {
-    icon: LucideIcon;
-    title: string;
-    issuer: string;
-    issued: string;
-    description: string;
-    skills: string[];
-    credential?: string;
-    credentialId?: string;
-    certificateFile?: string;
+    certification: Certification;
 }
 
 export default function CertificationCard({
-    icon: Icon,
-    title,
-    issuer,
-    issued,
-    description,
-    skills,
-    credential,
-    credentialId,
-    certificateFile,
+    certification,
 }: CertificationCardProps) {
     return (
         <Card className="rounded-3xl border-border/60 shadow-none transition-all hover:border-primary/20">
@@ -48,33 +31,37 @@ export default function CertificationCard({
                 <div className="mb-6 flex items-start gap-5">
 
                     <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-primary/10">
-                        <Icon className="h-7 w-7 text-primary" />
+                        <Award className="h-7 w-7 text-primary" />
                     </div>
 
                     <div className="flex-1">
 
                         <Badge
                             variant="tech"
-                            className="mb-3"
+                            className="mb-3 uppercase"
                         >
-                            Certification
+                            {certification.type}
                         </Badge>
 
                         <h3 className="text-xl font-bold leading-tight">
-                            {title}
+                            {certification.name}
                         </h3>
 
                         <p className="mt-2 font-medium">
-                            {issuer}
+                            {certification.issuer}
                         </p>
 
                         <div className="mt-2 flex flex-wrap gap-4 text-sm text-muted-foreground">
-                            <span>{issued}</span>
+                            <span>
+                                {certification.issueDate
+                                    ? new Date(certification.issueDate).getFullYear()
+                                    : ""}
+                            </span>
 
-                            {credential && (
+                            {certification.credentialId && (
                                 <>
-                                    <span>•</span>
-                                    <span>{credential}</span>
+                                    <span>-</span>
+                                    <span>{certification.credentialId}</span>
                                 </>
                             )}
                         </div>
@@ -83,35 +70,8 @@ export default function CertificationCard({
 
                 </div>
 
-                {/* Description */}
-                <p className="text-muted-foreground leading-7">
-                    {description}
-                </p>
-
-                {/* Skills */}
-                <div className="mt-6 flex flex-wrap gap-2">
-                    {skills.map((skill) => (
-                        <Badge
-                            key={skill}
-                            variant="tech"
-                        >
-                            {skill}
-                        </Badge>
-                    ))}
-                </div>
-
-                {/* Credential ID */}
-                {credentialId && (
-                    <p className="mt-6 text-sm text-muted-foreground">
-                        Credential ID:{" "}
-                        <span className="font-medium">
-                            {credentialId}
-                        </span>
-                    </p>
-                )}
-
                 {/* Button */}
-                {certificateFile && (
+                {certification.imageId && (
                     <div className="mt-auto pt-8">
                         <Dialog>
                             <DialogTrigger
@@ -126,29 +86,35 @@ export default function CertificationCard({
                             />
 
                             <DialogContent className="h-[98vh]! w-[98vw]! max-h-[98vh]! max-w-[98vw]! overflow-hidden p-0">
-
                                 <DialogHeader className="border-b px-6 py-4">
                                     <DialogTitle>
-                                        {title}
+                                        {certification.image?.fileName}
                                     </DialogTitle>
                                 </DialogHeader>
 
-                                <object
-                                    data={certificateFile}
-                                    type="application/pdf"
-                                    className="h-[calc(98vh)] w-full"
-                                >
-                                    <p>
-                                        Your browser cannot display PDFs.
-                                        <a
-                                            href={certificateFile}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                        >
-                                            Open in a new tab
-                                        </a>
-                                    </p>
-                                </object>
+                                {certification.image ? (
+                                    <object
+                                        data={certification.image.url}
+                                        type="application/pdf"
+                                        className="h-[calc(98vh-73px)] w-full"
+                                    >
+                                        <p className="p-6">
+                                            Your browser cannot display PDFs.{" "}
+                                            <a
+                                                href={certification.image.url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-primary underline"
+                                            >
+                                                Open in a new tab
+                                            </a>
+                                        </p>
+                                    </object>
+                                ) : (
+                                    <div className="flex h-full items-center justify-center">
+                                        Certificate file not found.
+                                    </div>
+                                )}
                             </DialogContent>
                         </Dialog>
 

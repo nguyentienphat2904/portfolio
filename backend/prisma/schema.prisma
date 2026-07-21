@@ -1,10 +1,48 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      UserRole @default(ADMIN)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Profile {
+  id          String       @id @default(cuid())
+  name        String
+  title       String
+  bio         String       @db.Text
+  available   Boolean      @default(true)
+  location    String?
+  email       String?
+  resumeId    String?
+  avatarId    String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  socialLinks SocialLink[]
+  resume      Media?       @relation("ResumeMedia", fields: [resumeId], references: [id])
+  avatar      Media?       @relation("AvatarMedia", fields: [avatarId], references: [id])
+}
+
+model SocialLink {
+  id        String         @id @default(cuid())
+  profileId String
+  profile   Profile        @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  platform  SocialPlatform
+  url       String
+  icon      String?
+  order     Int            @default(0)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
 }
 
 model ProjectCategory {
@@ -13,38 +51,31 @@ model ProjectCategory {
   slug      String    @unique
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  projects  Project[]
-}
-
-model Skill {
-  id        String        @id @default(cuid())
-  name      String        @unique
-  category  SkillCategory
-  icon      String?
-  order     Int           @default(0)
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
-  projects  Project[]     @relation("ProjectToSkill")
+  order     Int       @default(0)
+  projects  Project[] @relation("ProjectToCategory")
 }
 
 model Project {
-  id          String           @id @default(cuid())
+  id          String            @id @default(cuid())
   title       String
-  slug        String           @unique
+  slug        String            @unique
   description String
   thumbnailId String?
   githubUrl   String?
   liveUrl     String?
-  featured    Boolean          @default(false)
+  featured    Boolean           @default(false)
+  pinned      Boolean           @default(false)
   startDate   DateTime?
   endDate     DateTime?
-  categoryId  String?
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
-  category    ProjectCategory? @relation(fields: [categoryId], references: [id])
-  thumbnail   Media?           @relation("ProjectThumbnail", fields: [thumbnailId], references: [id])
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  content     String?
+  order       Int               @default(0)
+  status      ProjectStatus     @default(COMPLETED)
+  categories  ProjectCategory[] @relation("ProjectToCategory")
+  thumbnail   Media?            @relation("ProjectThumbnail", fields: [thumbnailId], references: [id])
   images      ProjectImage[]
-  skills      Skill[]          @relation("ProjectToSkill")
+  skills      Skill[]           @relation("ProjectToSkill")
 }
 
 model ProjectImage {
@@ -56,10 +87,25 @@ model ProjectImage {
   createdAt DateTime @default(now())
   media     Media    @relation(fields: [mediaId], references: [id], onDelete: Cascade)
   project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, mediaId])
+}
+
+model Skill {
+  id          String            @id @default(cuid())
+  name        String            @unique
+  category    SkillCategory
+  icon        String?
+  order       Int               @default(0)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  level       Int?
+  projects    Project[]         @relation("ProjectToSkill")
+  experiences ExperienceSkill[]
 }
 
 model Experience {
-  id          String         @id @default(cuid())
+  id          String            @id @default(cuid())
   company     String
   position    String
   employment  EmploymentType
@@ -68,47 +114,65 @@ model Experience {
   website     String?
   startDate   DateTime
   endDate     DateTime?
-  current     Boolean        @default(false)
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
-  logo        Media?         @relation(fields: [logoId], references: [id])
+  current     Boolean           @default(false)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  location    String?
+  order       Int               @default(0)
+  logo        Media?            @relation(fields: [logoId], references: [id])
+  skills      ExperienceSkill[]
+}
+
+model ExperienceSkill {
+  experienceId String
+  skillId      String
+
+  experience Experience @relation(fields: [experienceId], references: [id], onDelete: Cascade)
+  skill      Skill      @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@id([experienceId, skillId])
 }
 
 model Education {
-  id        String   @id @default(cuid())
-  school    String
-  degree    String
-  major     String
-  logoId    String?
-  startYear Int
-  endYear   Int?
-  gpa       Float?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  logo      Media?   @relation(fields: [logoId], references: [id])
+  id          String   @id @default(cuid())
+  school      String
+  degree      String
+  major       String
+  logoId      String?
+  startYear   Int
+  endYear     Int?
+  gpa         Float?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  description String?
+  order       Int      @default(0)
+  logo        Media?   @relation(fields: [logoId], references: [id])
 }
 
 model Certification {
-  id            String    @id @default(cuid())
+  id            String            @id @default(cuid())
   name          String
   issuer        String
   issueDate     DateTime?
   credentialId  String?
   credentialUrl String?
   imageId       String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  image         Media?    @relation(fields: [imageId], references: [id])
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  order         Int               @default(0)
+  type          CertificationType
+  image         Media?            @relation(fields: [imageId], references: [id])
 }
 
 model ContactMessage {
-  id        String   @id @default(cuid())
+  id        String        @id @default(cuid())
   name      String
   email     String
   subject   String
   message   String
-  isRead    Boolean  @default(false)
-  createdAt DateTime @default(now())
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  status    ContactStatus @default(NEW)
 }
 
 model Media {
@@ -122,7 +186,7 @@ model Media {
   size               Int?
   width              Int?
   height             Int?
-  folder             String?
+  folder             MediaFolder
   createdAt          DateTime        @default(now())
   updatedAt          DateTime        @updatedAt
   certifications     Certification[]
@@ -130,14 +194,31 @@ model Media {
   experiences        Experience[]
   projectThumbnailOf Project[]       @relation("ProjectThumbnail")
   projectImages      ProjectImage[]
+  siteSettings       SiteSetting[]
+  resumeMedia        Profile[]       @relation("ResumeMedia")
+  avatarMedia        Profile[]       @relation("AvatarMedia")
 }
 
-enum MediaType {
-  IMAGE
-  VIDEO
-  PDF
-  DOCUMENT
-  OTHER
+model SiteSetting {
+  id          String   @id @default(cuid())
+  siteName    String
+  description String
+  keywords    String[]
+  faviconId   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  favicon     Media?   @relation(fields: [faviconId], references: [id])
+}
+
+enum UserRole {
+  ADMIN
+}
+
+enum ProjectStatus {
+  PLANNING
+  DEVELOPMENT
+  COMPLETED
+  ARCHIVED
 }
 
 enum SkillCategory {
@@ -156,4 +237,43 @@ enum EmploymentType {
   PART_TIME
   FULL_TIME
   FREELANCE
+}
+
+enum CertificationType {
+  COURSE
+  PROFESSIONAL
+  ACADEMIC
+}
+
+enum ContactStatus {
+  NEW
+  REPLIED
+  ARCHIVED
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+  PDF
+  DOCUMENT
+  OTHER
+}
+
+enum SocialPlatform {
+  GITHUB
+  LINKEDIN
+  FACEBOOK
+  INSTAGRAM
+  X
+  YOUTUBE
+  EMAIL
+}
+
+enum MediaFolder {
+  PROJECT
+  CERTIFICATE
+  LOGO
+  PROFILE
+  RESUME
+  OTHER
 }
