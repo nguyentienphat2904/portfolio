@@ -35,3 +35,9 @@ jobs:
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/portfolio-api:latest
             ${{ secrets.DOCKER_USERNAME }}/portfolio-api:${{ github.sha }}
+
+      - name: Trigger Render Deploy
+        if: success()
+        run: |
+          echo "Triggering Render redeploy..."
+          curl -X POST ${{ secrets.RENDER_SPRING_HOOK }}
