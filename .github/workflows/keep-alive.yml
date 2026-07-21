@@ -1,0 +1,19 @@
+name: Keep Render API Alive
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+
+  workflow_dispatch:
+
+jobs:
+  ping:
+    name: Ping Render Health Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Call health endpoint
+        run: |
+          curl -X GET \
+            "https://portfolio-api-tw8a.onrender.com/api/v1/health" \
+            -H "accept: */*"
