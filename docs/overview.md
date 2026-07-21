@@ -16,17 +16,23 @@ Xây dựng một website portfolio cá nhân có:
 
 # 2. Kiến trúc hệ thống
 
-```
-                    Cloudflare
-                         │
-        ┌────────────────┴────────────────┐
-        │                                 │
-   Next.js Frontend                Spring Boot API
-      (Static)                        REST API
-        │                                 │
-        └────────────────┬────────────────┘
-                         │
-                    PostgreSQL
+```mermaid
+flowchart TD
+    A[Cloudflare]
+
+    subgraph APP["Application Layer"]
+        B[Next.js Frontend<br/>Static]
+        C[Spring Boot API<br/>REST API]
+    end
+
+    subgraph DB["Database Layer"]
+        D[(PostgreSQL)]
+    end
+
+    A --> B
+    A --> C
+    B --> D
+    C --> D
 ```
 
 ---
@@ -45,22 +51,24 @@ Xây dựng một website portfolio cá nhân có:
 | | TanStack Query | Latest | Server State Management |
 | | React Hook Form | Latest | Form Management |
 | | Zod | Latest | Schema Validation |
-| **Backend** | Java | 21 (LTS) | Programming Language |
-| | Spring Boot | 3.x | Backend Framework |
-| | Spring Security | 6.x | Authentication & Authorization |
-| | Spring Data JPA | 3.x | ORM Layer |
-| | Hibernate | 6.x | JPA Implementation |
-| | Flyway | Latest | Database Migration |
-| | Maven | 3.x | Dependency & Build Management |
+| **Backend** | Node.js | 22 LTS | Runtime Environment |
+| | NestJS | 11.x | Backend Framework |
+| | TypeScript | 5.x | Programming Language |
+| | Prisma ORM | 7.x | ORM Layer |
+| | JWT | Latest | Authentication |
+| | Passport.js | Latest | Authentication Middleware |
+| | Swagger | Latest | API Documentation |
+| | Zod | 4.x | Schema Validation |
+| | pnpm | 10.x | Package Manager |
 | | Docker | Latest | Containerization |
-| **Database** | PostgreSQL | 17 | Relational Database |
+| **Database** | PostgreSQL | 16 | Relational Database |
 | **Image Storage** | Cloudinary | Free Plan | Image Hosting & CDN |
 | **Authentication** | JWT | RFC 7519 | Stateless Authentication |
 | | BCrypt | Spring Security | Password Hashing |
 | **CI/CD** | GitHub Actions | Latest | Continuous Integration & Deployment |
 | **Deployment** | Vercel | Free | Frontend Hosting |
-| | Oracle Cloud Free or Render Free | Free | Backend Hosting |
-| **Version Control** | Git | Latest | Source Code Management |
+| | Oracle Cloud Free | Free | Backend Hosting |
+| **VC** | Git | Latest | Source Code Management |
 | | GitHub | Free | Repository Hosting |
 
 ---
@@ -478,14 +486,9 @@ Animation:
 
 ---
 
-# 9. Triển khai (Deployment)
+# 9. Triển khai
 
-## Frontend
-
-- Vercel
-
-Ưu điểm:
-
+## Frontend - Vercel
 - Miễn phí
 - CDN
 - HTTPS
@@ -493,29 +496,15 @@ Animation:
 
 ---
 
-## Backend
-
-Ưu tiên:
-
-### Oracle Cloud Free
+## Backend - Oracle Cloud Free
 
 - Docker
-- Spring Boot
 - Chạy 24/7
 - Không sleep
 
-Hoặc:
-
-### Render Free
-
-- Dễ deploy
-- Có cold start khi không có request
-
 ---
 
-## Database
-
-Neon PostgreSQL
+## Database - Neon PostgreSQL
 
 - Miễn phí
 - Managed Database
@@ -524,9 +513,7 @@ Neon PostgreSQL
 
 ---
 
-## Image Storage
-
-Cloudinary
+## File Storage - Cloudinary
 
 - Miễn phí
 - CDN
@@ -536,23 +523,32 @@ Cloudinary
 
 # 10. CI/CD
 
-```
-GitHub
-      │
-      ▼
-GitHub Actions
-      │
-      ├────────────► Vercel (Frontend)
-      │
-      └────────────► Backend Server
-```
+```mermaid
+flowchart TD
+    A[GitHub]
+    B[GitHub Actions]
 
-Quy trình:
+    subgraph FE["Frontend Deployment"]
+        C[Vercel]
+    end
 
-1. Push code lên GitHub.
-2. GitHub Actions chạy kiểm tra và build.
-3. Frontend tự động deploy lên Vercel.
-4. Backend tự động build Docker image và triển khai.
-5. Website được cập nhật sau mỗi lần merge vào `main`.
+    subgraph BE["Backend Deployment"]
+        D[Build Docker Image]
+        E[Push Docker Registry]
+        F[Deploy Backend Server]
+    end
+
+    G([Updated Website])
+
+    A --> B
+    B --> C
+
+    B --> D
+    D --> E
+    E --> F
+
+    C --> G
+    F --> G
+```
 
 ---
