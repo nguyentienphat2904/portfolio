@@ -24,9 +24,9 @@ export default function Experience() {
     return (
         <section
             id="experience"
-            className="py-28"
+            className="relative min-h-[calc(100vh-5rem)] flex items-center justify-center py-20 overflow-hidden "
         >
-            <div className="container mx-auto max-w-6xl px-6">
+            <div className="container mx-auto max-w-7xl px-6">
 
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -62,7 +62,6 @@ export default function Experience() {
                             />
                         ))}
                 </div>
-
             </div>
         </section>
     );

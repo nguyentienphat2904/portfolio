@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - backend
+      - main
+    paths:
+      - "backend/**"
+      - ".github/workflows/be-docker.yml"
 
 jobs:
   docker:

@@ -34,7 +34,7 @@ export default function Projects() {
     return (
         <section
             id="projects"
-            className="py-24 "
+            className="relative min-h-[calc(100vh-5rem)] flex items-center justify-center py-20 overflow-hidden "
         >
             <div className="container mx-auto max-w-7xl px-6 ">
 
