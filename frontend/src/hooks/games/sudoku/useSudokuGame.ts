@@ -2,6 +2,7 @@
 
 import {
     useCallback,
+    useEffect,
     useMemo,
     useState,
 } from "react";
@@ -12,16 +13,20 @@ import type {
     SudokuBoard,
 } from "@/lib/game/sudoku/types";
 import { cloneBoard, isCompleted, isValidMove } from "@/lib/game/sudoku/utils";
-import { generateSudoku } from "@/lib/game/sudoku/generator";
+import { createEmptyBoard, generateSudoku } from "@/lib/game/sudoku/generator";
 
 export function useSudokuGame() {
     const [difficulty, setDifficulty] = useState<Difficulty>("easy");
-    const [board, setBoard] = useState<SudokuBoard>(() => generateSudoku(difficulty));
+    const [board, setBoard] = useState<SudokuBoard>(() => createEmptyBoard());
     const [selected, setSelected] = useState<SelectedCell | null>(null,);
     const [mistakes, setMistakes] = useState(0);
     const [noteMode, setNoteMode] = useState(false);
     const [history, setHistory] = useState<SudokuBoard[]>([]);
     const [completed, setCompleted] = useState(false);
+
+    useEffect(() => {
+        setBoard(generateSudoku(difficulty));
+    }, []);
 
     const numberCounts = useMemo(() => {
         const counts = Array(10).fill(0);

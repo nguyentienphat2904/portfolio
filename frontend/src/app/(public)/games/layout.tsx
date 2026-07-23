@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { UnifrakturCook } from "next/font/google";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export const unifraktur = UnifrakturCook({
     subsets: ["latin"],
@@ -41,7 +42,9 @@ export default function GamesLayout({
                         <span>Games</span>
                     </Link>
 
-                    <div className="w-20" />
+                    <div className="flex w-20 justify-end">
+                        <ThemeToggle />
+                    </div>
                 </header>
 
                 <div className="flex-1">{children}</div>

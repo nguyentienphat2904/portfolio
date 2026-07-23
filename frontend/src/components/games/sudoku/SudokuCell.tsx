@@ -28,7 +28,6 @@ export default function SudokuCell({
                 text-xl font-bold transition-colors
 
                 border-r border-b border-gray-300
-                dark:border-gray-500
 
                 ${cell.col === 2 || cell.col === 5
                     ? "border-r-3 border-black dark:border-white"
@@ -41,17 +40,17 @@ export default function SudokuCell({
                 }
 
                 ${selected
-                    ? "bg-orange-400"
+                    ? "bg-orange-400 dark:bg-orange-500"
                     : sameNumber
-                        ? "bg-[#ffeb99]"
+                        ? "bg-yellow-200 dark:bg-yellow-800/60"
                         : highlighted
-                            ? "bg-[#fff2cc]"
+                            ? "bg-yellow-100 dark:bg-yellow-900/40"
                             : cell.fixed
-                                ? "bg-[#f2f2f2]"
-                                : "bg-white"
+                                ? "bg-gray-100 dark:bg-neutral-800"
+                                : "bg-white dark:bg-black"
                 }
 
-                text-black
+                text-black dark:text-white
             `}
         >
             {cell.value != null ? (
@@ -63,7 +62,7 @@ export default function SudokuCell({
                     )}
                 </>
             ) : (
-                <div className="grid h-full w-full grid-cols-3 grid-rows-3 text-xs font-normal text-gray-700">
+                <div className="grid h-full w-full grid-cols-3 grid-rows-3 text-xs font-normal text-gray-600 dark:text-gray-400">
                     {Array.from({ length: 9 }).map((_, index) => {
                         const number = index + 1;
 

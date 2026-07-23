@@ -12,7 +12,7 @@ const REMOVE_COUNT: Record<Difficulty, number> = {
 };
 
 
-function createEmptyBoard(): SudokuBoard {
+export function createEmptyBoard(): SudokuBoard {
     return Array.from(
         { length: 9 },
         (_, row) =>
