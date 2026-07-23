@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronDown, LayoutDashboard, Menu, Moon, Sun } from "lucide-react";
+import { ChevronDown, Gamepad2, LayoutDashboard, Menu, Moon, Sun } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -109,6 +109,14 @@ export default function Navbar() {
                                             className={`absolute h-4 w-4 transition-all duration-300 ${isDark ? "rotate-0 scale-100" : "rotate-90 scale-0"}`}
                                         />
                                     </div>
+                                </DropdownMenuItem>
+
+                                <DropdownMenuItem
+                                    className="cursor-pointer flex items-center justify-between"
+                                    onClick={() => router.push("/games")}
+                                >
+                                    <span>Games</span>
+                                    <Gamepad2 className="h-4 w-4" />
                                 </DropdownMenuItem>
 
                                 <DropdownMenuSeparator />
